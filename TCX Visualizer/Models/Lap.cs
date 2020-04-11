@@ -8,17 +8,21 @@ namespace TCX_Visualizer.Models
 {
     class Lap
     {
-        public Lap(DateTime startTime, double totalTime, double totalDistance, double maxSpeed, List<Trackpoint> trackpoints, double caloriesBurned = -1, double avgHeartRate = -1, double maxHr= -1, double maxCadence = -1)
+        public Lap(DateTime startTime, double totalTime, double totalDistance, double maxSpeed, List<Trackpoint> trackpoints, Sport type, double caloriesBurned = -1)
         {
             StartTime = startTime;
             TotalTimeSeconds = totalTime;
             TotalDistanceMeters = totalDistance;
             MaxSpeed = maxSpeed;
             Trackpoints = trackpoints;
+            Type = type;
             CaloriesBurned = caloriesBurned;
-            AvgHeartRate = avgHeartRate;
-            MaxHeartRate = maxHr;
-            MaxCadence = maxCadence;
+        }
+
+        public Sport Type
+        {
+            get;
+            private set;
         }
 
         public DateTime StartTime
@@ -52,26 +56,109 @@ namespace TCX_Visualizer.Models
         }
         public double AvgHeartRate
         {
-            get;
-            private set;
+            get
+            {
+                double avg = Trackpoints.Average(x => x.HeartRate);
+                return avg;
+            }
         }
 
         public double MaxHeartRate
         {
-            get;
-            private set;
+            get
+            {
+                double max = Trackpoints.Max(x => x.HeartRate);
+                return max;
+            }
+        }
+
+        public double AvgPower
+        {
+            get
+            {
+                if(Type == Sport.Biking)
+                {
+                    double avg = Trackpoints.Average(x => (x.Extensions as BikeExtension).Watts);
+                    return avg;
+                }
+                else
+                {
+                    return -1;
+                }
+                
+            }
+        }
+
+        public double MaxPower
+        {
+            get
+            {
+                if (Type == Sport.Biking)
+                {
+                    double max = Trackpoints.Max(x => (x.Extensions as BikeExtension).Watts);
+                    return max;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
         }
 
         public double MaxCadence
         {
-            get;
-            private set;
+            get
+            {
+                if (Type == Sport.Running)
+                {
+                    double max = Trackpoints.Max(x => (x.Extensions as RunExtension).Cadence);
+                    return max;
+                }
+                else if (Type == Sport.Biking)
+                {
+                    double max = Trackpoints.Max(x => x.Cadence);
+                    return max;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
         }
 
         public List<Trackpoint> Trackpoints
         {
             get;
             private set;
+        }
+
+        public double AvgSpeed
+        {
+            get
+            {
+                double avg = TotalDistanceMeters / TotalTimeSeconds;
+                return avg;
+            }
+        }
+        public double AvgCadence
+        {
+            get
+            {
+                if(Type == Sport.Running)
+                {
+                    double avg = Trackpoints.Average(x => (x.Extensions as RunExtension).Cadence);
+                    return avg;
+                }
+                else if(Type == Sport.Biking)
+                {
+                    double avg = Trackpoints.Average(x => x.Cadence);
+                    return avg;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
         }
     }
 }

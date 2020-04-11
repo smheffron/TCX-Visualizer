@@ -78,6 +78,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\BikeActivity.cs" />
+    <Compile Include="Models\Sport.cs" />
     <Compile Include="Models\RunActivity.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Page Include="MainWindow.xaml">

@@ -8,6 +8,7 @@ namespace TCX_Visualizer.Models
 {
     class RunExtension : Extension
     {
+        private double cadence = -1;
         public RunExtension(double speed, double cadence) : base(speed)
         {
             Cadence = cadence;
@@ -15,8 +16,14 @@ namespace TCX_Visualizer.Models
 
         public double Cadence
         {
-            get;
-            private set;
+            get
+            {
+                return this.cadence * 2;
+            }
+            private set
+            {
+                this.cadence = value;
+            }
         }
     }
 }

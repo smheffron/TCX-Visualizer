@@ -8,7 +8,8 @@ namespace TCX_Visualizer.Models
 {
     class Trackpoint
     {
-        public Trackpoint(DateTime time, Coordinate pos, double alt, double dis, double hr, double cadence = -1, Extension extensions = null)
+        private double cadence = -1;
+        public Trackpoint(DateTime time, Coordinate pos, double alt, double dis, double hr, Sport type, double cadence = -1, Extension extensions = null)
         {
             Time = time;
             Position = pos;
@@ -17,6 +18,13 @@ namespace TCX_Visualizer.Models
             HeartRate = hr;
             Cadence = cadence;
             Extensions = extensions;
+            Type = type;
+        }
+
+        public Sport Type
+        {
+            get;
+            private set;
         }
 
         public DateTime Time
@@ -51,8 +59,25 @@ namespace TCX_Visualizer.Models
 
         public double Cadence
         {
-            get;
-            private set;
+            get
+            {
+                if(Type == Sport.Running)
+                {
+                    return (Extensions as RunExtension).Cadence;
+                }
+                else if(Type == Sport.Biking)
+                {
+                    return this.cadence;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            private set
+            {
+                this.cadence = value;
+            }
         }
 
         public Extension Extensions
