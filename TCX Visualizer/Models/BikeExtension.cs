@@ -18,5 +18,13 @@ namespace TCX_Visualizer.Models
             get;
             private set;
         }
+
+        public override double Speed
+        {
+            get
+            {
+                return base.Speed * 2.23694;
+            }
+        }
     }
 }

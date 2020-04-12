@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="TCX_Visualizer.View.Altitude"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TCX_Visualizer.View"
+             xmlns:oxy="http://oxyplot.org/wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <oxy:Plot Title="Elevation">
+            <oxy:Plot.Axes>
+                <oxy:LinearAxis Position="Bottom" Title="Time" IsZoomEnabled="True" IsPanEnabled="True" AbsoluteMaximum="{Binding ElevationData.Max}" AbsoluteMinimum="{Binding ElevationData.Min}"/>
+                <oxy:LinearAxis Position="Left" Title="Elevation" IsZoomEnabled="False" IsPanEnabled="False"/>
+            </oxy:Plot.Axes>
+            <oxy:Plot.Series>
+                <oxy:LineSeries ItemsSource="{Binding ElevationData.Points}" Color="LightGreen"/>
+            </oxy:Plot.Series>
+        </oxy:Plot>
+    </Grid>
+</UserControl>

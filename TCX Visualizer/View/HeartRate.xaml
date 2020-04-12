@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="TCX_Visualizer.View.HeartRate"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TCX_Visualizer.View"
+             xmlns:oxy="http://oxyplot.org/wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <oxy:Plot Title="Heart Rate">
+            <oxy:Plot.Axes>
+                <oxy:LinearAxis Position="Bottom" Title="Time" IsZoomEnabled="True" IsPanEnabled="True" AbsoluteMaximum="{Binding HeartRateData.Max}" AbsoluteMinimum="{Binding HeartRateData.Min}"/>
+                <oxy:LinearAxis Position="Left" Title="Heart Rate" IsZoomEnabled="False" IsPanEnabled="False"/>
+            </oxy:Plot.Axes>
+            <oxy:Plot.Series>
+                <oxy:LineSeries ItemsSource="{Binding HeartRateData.Points}" Color="IndianRed"/>
+            </oxy:Plot.Series>
+        </oxy:Plot>
+    </Grid>
+</UserControl>

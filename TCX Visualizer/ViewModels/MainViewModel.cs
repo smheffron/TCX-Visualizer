@@ -1,5 +1,8 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +19,110 @@ namespace TCX_Visualizer.ViewModels
     class MainViewModel : ViewModelBase
     {
         private String filePath;
+        private Sport activeType;
+        private Activity activeActivity;
+        private GraphData wattsData;
+        private GraphData heartRateData;
+        private GraphData speedData;
+        private GraphData cadenceData;
+        private GraphData elevationData;
+        private BarChartData lapData;
+
+        public Activity ActiveActivity
+        {
+            get
+            {
+                return activeActivity;
+            }
+            set
+            {
+                activeActivity = value;
+                RaisePropertyChanged("ActiveActivity");
+            }
+        }
+
+        public GraphData WattsData {
+            get
+            {
+                return wattsData;
+            }
+            set
+            {
+                wattsData = value;
+                RaisePropertyChanged("WattsData");
+            }
+        }
+        public BarChartData LapData {
+            get
+            {
+                return lapData;
+            }
+            set
+            {
+                lapData = value;
+                RaisePropertyChanged("LapData");
+            }
+        }
+        public GraphData ElevationData {
+            get
+            {
+                return elevationData;
+            }
+            set
+            {
+                elevationData = value;
+                RaisePropertyChanged("ElevationData");
+            }
+        }
+        public GraphData CadenceData {
+            get
+            {
+                return cadenceData;
+            }
+            set
+            {
+                cadenceData = value;
+                RaisePropertyChanged("CadenceData");
+            }
+        }
+        public GraphData SpeedData {
+            get
+            {
+                return speedData;
+            }
+            set
+            {
+                speedData = value;
+                RaisePropertyChanged("SpeedData");
+            }
+        }
+
+        public GraphData HeartRateData
+        {
+            get
+            {
+                return heartRateData;
+            }
+            set
+            {
+                heartRateData = value;
+                RaisePropertyChanged("HeartRateData");
+            }
+        }
+
+        public Sport ActiveType
+        {
+            get
+            {
+                return activeType;
+            }
+            set
+            {
+                activeType = value;
+                RaisePropertyChanged("ActiveType");
+            }
+        }
+
         public String FilePath
         {
             get {
@@ -66,6 +173,7 @@ namespace TCX_Visualizer.ViewModels
             if (inputSport.Equals("Running"))
             {
                 Sport type = Sport.Running;
+                ActiveType = type;
 
                 activities = root.Root.Elements(ns + "Activities").Elements(ns + "Activity")
                                       .Select(x => new RunActivity(
@@ -97,6 +205,7 @@ namespace TCX_Visualizer.ViewModels
             else if(inputSport.Equals("Biking"))
             {
                 Sport type = Sport.Biking;
+                ActiveType = type;
 
                 activities = root.Root.Elements(ns + "Activities").Elements(ns + "Activity")
                                       .Select(x => new BikeActivity(
@@ -131,8 +240,99 @@ namespace TCX_Visualizer.ViewModels
                 Console.WriteLine("Unrecognized Sport");
             }
 
-            Activity parsedActivity = activities.First();
-            Console.WriteLine(parsedActivity.ToString());
+            if(activities.First() != null)
+            {
+                ActiveActivity = activities.First();
+            }
+
+            List<double> l = new List<double>(ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => (y.Extensions as BikeExtension).Watts)).ToList());
+            List<DataPoint> dataPoints = new List<DataPoint>();
+            int i = 0;
+            foreach(double point in l)
+            {
+                dataPoints.Add(new DataPoint(i, point));
+                i++;
+            }
+            double max = dataPoints.Count;
+            double min = 0;
+
+            WattsData = new GraphData(dataPoints, max, min);
+
+            List<double> l2 = new List<double>(ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => y.HeartRate)).ToList());
+            List<DataPoint> dataPoints2 = new List<DataPoint>();
+            i = 0;
+            foreach (double point in l2)
+            {
+                TimeSpan time = TimeSpan.FromSeconds(i);
+
+                dataPoints2.Add(new DataPoint(TimeSpanAxis.ToDouble(time), point));
+                i++;
+            }
+            max = dataPoints2.Count;
+            min = 0;
+
+            HeartRateData = new GraphData(dataPoints2, max, min);
+
+            SpeedData = new GraphData(dataPoints, max, min);
+
+            List<double> l3 = new List<double>(ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => (y.Extensions as BikeExtension).Speed)).ToList());
+            List<DataPoint> dataPoints3 = new List<DataPoint>();
+            i = 0;
+            foreach (double point in l3)
+            {
+                TimeSpan time = TimeSpan.FromSeconds(i);
+
+                dataPoints3.Add(new DataPoint(TimeSpanAxis.ToDouble(time), point));
+                i++;
+            }
+            max = dataPoints3.Count;
+            min = 0;
+
+            SpeedData = new GraphData(dataPoints3, max, min);
+
+            List<double> l4 = new List<double>(ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => y.Cadence)).ToList());
+            List<DataPoint> dataPoints4 = new List<DataPoint>();
+            i = 0;
+            foreach (double point in l4)
+            {
+                TimeSpan time = TimeSpan.FromSeconds(i);
+
+                dataPoints4.Add(new DataPoint(TimeSpanAxis.ToDouble(time), point));
+                i++;
+            }
+            max = dataPoints4.Count;
+            min = 0;
+
+            CadenceData = new GraphData(dataPoints4, max, min);
+
+            List<double> l5 = new List<double>(ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => y.Altitude)).ToList());
+            List<DataPoint> dataPoints5 = new List<DataPoint>();
+            i = 0;
+            foreach (double point in l5)
+            {
+                TimeSpan time = TimeSpan.FromSeconds(i);
+
+                dataPoints5.Add(new DataPoint(TimeSpanAxis.ToDouble(time), point));
+                i++;
+            }
+            max = dataPoints5.Count;
+            min = 0;
+
+            ElevationData = new GraphData(dataPoints5, max, min);
+
+            List<double> l6 = new List<double>(ActiveActivity.Laps.Select(x => x.TotalTimeSeconds).ToList());
+            List<ColumnItem> dataPoints6 = new List<ColumnItem>();
+            i = 0;
+            foreach (double point in l6)
+            {
+                dataPoints6.Add(new ColumnItem { Color = OxyPlot.OxyColors.Aquamarine, Value = point/60, CategoryIndex = i });
+                i++;
+            }
+            max = dataPoints6.Count;
+            min = 0;
+
+            LapData = new BarChartData(dataPoints6, max, min);
+
         }
     }
 }

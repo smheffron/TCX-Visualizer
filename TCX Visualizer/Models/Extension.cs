@@ -8,15 +8,23 @@ namespace TCX_Visualizer.Models
 {
     class Extension
     {
+        private double speed;
+
         public Extension(double speed = -1)
         {
             Speed = speed;
         }
 
-        public double Speed
+        public virtual double Speed
         {
-            get;
-            private set;
+            get
+            {
+                return speed;
+            }
+            private set
+            {
+                speed = value;
+            }
         }
     }
 }
