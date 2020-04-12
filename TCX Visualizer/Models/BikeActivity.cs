@@ -13,11 +13,19 @@ namespace TCX_Visualizer.Models
 
         }
 
+        public String Name
+        {
+            get
+            {
+                return "Bike ride at " + Id.ToString();
+            }
+        }
+
         public double MaxCadence
         {
             get
             {
-                double max = Laps.Max(x => x.MaxHeartRate);
+                double max = Laps.Max(x => x.MaxCadence);
                 return max;
             }
         }
@@ -48,5 +56,7 @@ namespace TCX_Visualizer.Models
                 return avg;
             }
         }
+        
+        
     }
 }

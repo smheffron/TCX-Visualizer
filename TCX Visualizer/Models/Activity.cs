@@ -83,7 +83,7 @@ namespace TCX_Visualizer.Models
         {
             get
             {
-                return TotalDistance/TotalTime;
+                return (TotalDistance/TotalTime) * 2.23694;
             }
         }
 

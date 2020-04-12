@@ -13,6 +13,14 @@ namespace TCX_Visualizer.Models
 
         }
 
+        public String Name
+        {
+            get
+            {
+                return "Run at " + Id.ToString();
+            }
+        }
+
         public double MaxCadence
         {
             get { 

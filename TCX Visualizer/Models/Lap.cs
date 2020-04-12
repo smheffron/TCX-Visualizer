@@ -8,6 +8,7 @@ namespace TCX_Visualizer.Models
 {
     class Lap
     {
+        private double maxSpeed = 0;
         public Lap(DateTime startTime, double totalTime, double totalDistance, double maxSpeed, List<Trackpoint> trackpoints, Sport type, double caloriesBurned = -1)
         {
             StartTime = startTime;
@@ -45,8 +46,14 @@ namespace TCX_Visualizer.Models
 
         public double MaxSpeed
         {
-            get;
-            private set;
+            get
+            {
+                return maxSpeed *2.23694;
+            }
+            private set
+            {
+                maxSpeed = value;
+            }
         }
 
         public double CaloriesBurned
@@ -136,7 +143,7 @@ namespace TCX_Visualizer.Models
         {
             get
             {
-                double avg = TotalDistanceMeters / TotalTimeSeconds;
+                double avg = (TotalDistanceMeters / TotalTimeSeconds) * 2.23694;
                 return avg;
             }
         }

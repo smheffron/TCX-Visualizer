@@ -8,7 +8,14 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <oxy:Plot Title="Cadence">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.05*" />
+            <ColumnDefinition Width=".38*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <oxy:Plot Title="Cadence" Grid.Row="0" Grid.Column="0">
             <oxy:Plot.Axes>
                 <oxy:LinearAxis Position="Bottom" Title="Time" IsZoomEnabled="True" IsPanEnabled="True" AbsoluteMaximum="{Binding CadenceData.Max}" AbsoluteMinimum="{Binding CadenceData.Min}"/>
                 <oxy:LinearAxis Position="Left" Title="Cadence" IsZoomEnabled="False" IsPanEnabled="False"/>
@@ -17,5 +24,6 @@
                 <oxy:LineSeries ItemsSource="{Binding CadenceData.Points}" Color="LightGreen"/>
             </oxy:Plot.Series>
         </oxy:Plot>
+        <TextBlock Grid.Row="0" Grid.Column="1" FontWeight="Bold" FontSize="25" Text="{Binding CadenceInfo}" VerticalAlignment="Center" Padding="10px" Margin="40 0 0 0"></TextBlock>
     </Grid>
 </UserControl>

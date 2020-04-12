@@ -27,6 +27,12 @@ namespace TCX_Visualizer.ViewModels
         private GraphData cadenceData;
         private GraphData elevationData;
         private BarChartData lapData;
+        private String heartRateInfo;
+        private String cadenceInfo;
+        private String speedInfo;
+        private String elevationInfo;
+        private String wattsInfo;
+        private String name;
 
         public Activity ActiveActivity
         {
@@ -40,6 +46,84 @@ namespace TCX_Visualizer.ViewModels
                 RaisePropertyChanged("ActiveActivity");
             }
         }
+
+        public String Name
+        {
+            get
+            {
+                return name;
+            }
+            set
+            {
+                name = value;
+                RaisePropertyChanged("Name");
+            }
+        }
+
+        public string HeartRateInfo
+        {
+            get
+            {
+                return heartRateInfo;
+            }
+            set {
+                heartRateInfo = value;
+                RaisePropertyChanged("HeartRateInfo");
+            }
+        }
+
+        public string ElevationInfo
+        {
+            get
+            {
+                return elevationInfo;
+            }
+            set
+            {
+                elevationInfo = value;
+                RaisePropertyChanged("ElevationInfo");
+            }
+        }
+
+        public string SpeedInfo
+        {
+            get
+            {
+                return speedInfo;
+            }
+            set
+            {
+                speedInfo = value;
+                RaisePropertyChanged("SpeedInfo");
+            }
+        }
+
+        public string WattsInfo
+        {
+            get
+            {
+                return wattsInfo;
+            }
+            set
+            {
+                wattsInfo = value;
+                RaisePropertyChanged("WattsInfo");
+            }
+        }
+
+        public string CadenceInfo
+        {
+            get
+            {
+                return cadenceInfo;
+            }
+            set
+            {
+                cadenceInfo = value;
+                RaisePropertyChanged("CadenceInfo");
+            }
+        }
+
 
         public GraphData WattsData {
             get
@@ -273,8 +357,6 @@ namespace TCX_Visualizer.ViewModels
 
             HeartRateData = new GraphData(dataPoints2, max, min);
 
-            SpeedData = new GraphData(dataPoints, max, min);
-
             List<double> l3 = new List<double>(ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => (y.Extensions as BikeExtension).Speed)).ToList());
             List<DataPoint> dataPoints3 = new List<DataPoint>();
             i = 0;
@@ -333,6 +415,74 @@ namespace TCX_Visualizer.ViewModels
 
             LapData = new BarChartData(dataPoints6, max, min);
 
+
+
+            if (ActiveActivity != null)
+            {
+                double avg = ActiveActivity.AvgHeartRate;
+                double maxim = ActiveActivity.MaxHeartRate;
+                HeartRateInfo = "Average: " + Math.Round(avg, 0) + " bpm\nMax: " + Math.Round(maxim, 0)+" bpm";
+            }
+            if (ActiveActivity != null)
+            {
+                if(ActiveActivity is BikeActivity)
+                {
+                    BikeActivity b = (BikeActivity)ActiveActivity; 
+                    double avg = b.AvgCadence;
+                    double maxim = b.MaxCadence;
+                    CadenceInfo = "Average: " + Math.Round(avg, 0) + " rpm\nMax: " + Math.Round(maxim, 0)+" rpm";
+                }
+            }
+            if (ActiveActivity != null)
+            {
+                double avg = ActiveActivity.AvgSpeed;
+                double maxim = ActiveActivity.MaxSpeed;
+                SpeedInfo = "Average: " + Math.Round(avg, 2) + " mph\nMax: " + Math.Round(maxim, 2)+" mph";
+            }
+            if (ActiveActivity != null)
+            {
+                if (ActiveActivity is BikeActivity)
+                {
+                    BikeActivity b = (BikeActivity)ActiveActivity;
+                    double avg = b.AvgPower;
+                    double maxim = b.MaxPower;
+                    WattsInfo = "Average: " + Math.Round(avg, 0) + " W\nMax: " + Math.Round(maxim, 0)+" W";
+                }
+            }
+            if (ActiveActivity != null)
+            {
+                double asc = 0;
+                double desc = 0;
+                var altPoints = ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => y.Altitude));
+
+                double prev = altPoints.First();
+                foreach(double point in altPoints)
+                {
+                    if(prev < point)
+                    {
+                        asc += point - prev;
+                    }
+                    else if(prev > point)
+                    {
+                        desc += prev - point;
+                    }
+                    prev = point;
+                }
+
+                ElevationInfo = "Ascent: " + Math.Round(asc, 0) + " m\nDescent: " + Math.Round(desc, 0)+" m";
+
+                if (ActiveActivity != null)
+                {
+                    if (ActiveActivity is BikeActivity)
+                    {
+                        Name = (ActiveActivity as BikeActivity).Name;
+                    }
+                    else if (ActiveActivity is RunActivity)
+                    {
+                        Name = (ActiveActivity as RunActivity).Name;
+                    }
+                }
+            }
         }
     }
 }
