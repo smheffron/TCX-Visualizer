@@ -8,13 +8,13 @@
              xmlns:oxy="http://oxyplot.org/wpf"
              d:DesignHeight="450" d:DesignWidth="800" Background="#f1f1f1">
     <Grid>
-        <oxy:Plot Title="Laps" IsLegendVisible="False" PlotAreaBorderColor="#757575" TextColor="#757575" Background="#F5F5F5">
+        <oxy:Plot Title="Laps" IsLegendVisible="False" PlotAreaBorderColor="#757575" TextColor="#444444" Background="#F5F5F5">
             <oxy:Plot.Axes>
-                <oxy:CategoryAxis Position="Bottom" Title="Lap" IsZoomEnabled="True" IsPanEnabled="True" TicklineColor="#757575" AbsoluteMaximum="{Binding LapData.Max}" AbsoluteMinimum="{Binding LapData.Min}" />
+                <oxy:CategoryAxis Position="Bottom" Title="Lap" IsZoomEnabled="True" IsPanEnabled="True" TicklineColor="#757575" AbsoluteMaximum="{Binding LapData.Max, FallbackValue=1}" AbsoluteMinimum="{Binding LapData.Min, FallbackValue=0}" />
             <oxy:LinearAxis Position="Left" Title="{Binding SelectedLapData}" IsZoomEnabled="False" IsPanEnabled="False" TicklineColor="#757575"/>
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
-                <oxy:ColumnSeries Title="{Binding SelectedLapData}" ItemsSource="{Binding LapData.Points}" Width="50" Foreground="#757575" />
+                <oxy:ColumnSeries Title="{Binding SelectedLapData}" ItemsSource="{Binding LapData.Points}" Width="50" Foreground="#444444" />
             </oxy:Plot.Series>
          </oxy:Plot>
     </Grid>

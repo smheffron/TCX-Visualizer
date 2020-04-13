@@ -762,6 +762,8 @@ namespace TCX_Visualizer.ViewModels
             {
                 List<DataPoint> wattsDataPoints = new List<DataPoint>(lap.Trackpoints.Select(y => new DataPoint(TimeSpanAxis.ToDouble(y.Time - start), (y.Extensions as BikeExtension).Watts)).ToList());
 
+                Console.WriteLine(wattsDataPoints.First().X);
+
                 max = wattsDataPoints.Max(x => x.X) +1;
                 min = wattsDataPoints.Min(x => x.X);
                
@@ -1007,10 +1009,10 @@ namespace TCX_Visualizer.ViewModels
                                                     Double.TryParse((String)z?.Element(ns + "Position")?.Element(ns + "LongitudeDegrees")?.Value, out double r)? r : -1),
                                                     Double.TryParse((String)z?.Element(ns + "AltitudeMeters")?.Value, out double ee)? ee : -1,
                                                     Double.TryParse((String)z?.Element(ns + "DistanceMeters")?.Value, out double e)? e : -1,
-                                                    Double.TryParse((String)z?.Element(ns + "HeartRateBpm")?.Element(ns + "Value").Value, out double ww) ? ww : -1,                                              
+                                                    Double.TryParse((String)z?.Element(ns + "HeartRateBpm")?.Element(ns + "Value")?.Value, out double ww) ? ww : -1,                                              
                                                     type,
                                                     extensions: new RunExtension(Double.TryParse((String)z?.Element(ns + "Extensions")?.Element(ns3 + "TPX")?.Element(ns3 + "Speed")?.Value, out double w)? w : -1,
-                                                    Double.TryParse((String)z?.Element(ns + "Extensions")?.Element(ns3 + "TPX")?.Element(ns3 + "RunCadence").Value, out double qq)?qq : -1)
+                                                    Double.TryParse((String)z?.Element(ns + "Extensions")?.Element(ns3 + "TPX")?.Element(ns3 + "RunCadence")?.Value, out double qq)?qq : -1)
                                                     )).ToList(),
                                                 type,
                                                 Double.TryParse((String)y?.Element(ns + "Calories")?.Value, out double q)? q : -1

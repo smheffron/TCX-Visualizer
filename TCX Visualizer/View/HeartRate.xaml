@@ -15,15 +15,15 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <oxy:Plot Title="Heart Rate" Grid.Row="0" Grid.Column="0" PlotAreaBorderColor="#757575" TextColor="#757575" Background="#F5F5F5">
+        <oxy:Plot Title="Heart Rate" Grid.Row="0" Grid.Column="0" PlotAreaBorderColor="#757575" TextColor="#444444" Background="#F5F5F5">
             <oxy:Plot.Axes>
-                <oxy:TimeSpanAxis StringFormat="hh:mm" Position="Bottom" Title="Time (hh:mm)" IsZoomEnabled="True" IsPanEnabled="True" AbsoluteMaximum="{Binding HeartRateData.Max}" AbsoluteMinimum="{Binding HeartRateData.Min}" TicklineColor="#757575" />
+                <oxy:TimeSpanAxis StringFormat="hh:mm:ss" Position="Bottom" Title="Time (hh:mm:ss)" IsZoomEnabled="True" IsPanEnabled="True" AbsoluteMaximum="{Binding HeartRateData.Max , FallbackValue=1}" AbsoluteMinimum="{Binding HeartRateData.Min, FallbackValue=0}" TicklineColor="#757575" />
                 <oxy:LinearAxis Position="Left" Title="Heart Rate (bpm)" IsZoomEnabled="False" IsPanEnabled="False" TicklineColor="#757575"/>
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
                 <oxy:LineSeries ItemsSource="{Binding HeartRateData.Points}" Color="IndianRed"/>
             </oxy:Plot.Series>
         </oxy:Plot>
-        <TextBlock Grid.Row="0" Grid.Column="1" FontWeight="Bold" FontSize="20" Text="{Binding HeartRateInfo}" VerticalAlignment="Center" Padding="10px" Margin="40 0 0 0" Foreground="#757575" ></TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="1" FontWeight="Bold" FontSize="20" Text="{Binding HeartRateInfo}" VerticalAlignment="Center" Padding="10px" Margin="40 0 0 0" Foreground="#444444" ></TextBlock>
     </Grid>
 </UserControl>

@@ -174,8 +174,15 @@ namespace TCX_Visualizer.Models
         {
             get
             {
-                double avg = Math.Round( (TotalDistanceMeters / TotalTimeSeconds) * 2.23694, 2);
-                return avg;
+                if(TotalTimeSeconds <= 0)
+                {
+                    return 0;
+                }
+                else
+                {
+                    double avg = Math.Round((TotalDistanceMeters / TotalTimeSeconds) * 2.23694, 2);
+                    return avg;
+                }
             }
         }
         public double AvgCadence

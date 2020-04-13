@@ -30,9 +30,9 @@
             <RowDefinition Height="0.5*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Foreground="#757575" FontWeight="Bold" Grid.Row="0" Margin="3px" Grid.Column="0" Grid.ColumnSpan="1" Text="Laps:" Background="White" TextAlignment="Center" VerticalAlignment="Center" FontSize="30px"></TextBlock>
-        <TextBlock Foreground="#757575" FontWeight="Bold" Grid.Row="0" Margin="3px"  Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Name, FallbackValue='Upload an Activity'}" Background="White" TextAlignment="Center" VerticalAlignment="Center" FontSize="30px"></TextBlock>
-        <TextBlock Foreground="#757575" FontWeight="Bold" Grid.Row="0" Margin="3px"  Grid.Column="3" Grid.ColumnSpan="1" Text="{Binding StatsDisplayName}" Background="White" TextAlignment="Center" VerticalAlignment="Center" FontSize="30px"></TextBlock>
+        <TextBlock Foreground="#444444" FontWeight="Bold" Grid.Row="0" Margin="3px" Grid.Column="0" Grid.ColumnSpan="1" Text="Laps:" Background="White" TextAlignment="Center" VerticalAlignment="Center" FontSize="30px"></TextBlock>
+        <TextBlock Foreground="#444444" FontWeight="Bold" Grid.Row="0" Margin="3px"  Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Name, FallbackValue='Upload an Activity'}" Background="White" TextAlignment="Center" VerticalAlignment="Center" FontSize="30px"></TextBlock>
+        <TextBlock Foreground="#444444" FontWeight="Bold" Grid.Row="0" Margin="3px"  Grid.Column="3" Grid.ColumnSpan="1" Text="{Binding StatsDisplayName}" Background="White" TextAlignment="Center" VerticalAlignment="Center" FontSize="30px"></TextBlock>
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" Grid.Column="0" Grid.Row="1" Grid.RowSpan="6">
             <Grid MinHeight="500px">
@@ -47,48 +47,48 @@
                     <RowDefinition Height="0.2*" />
                 </Grid.RowDefinitions>
 
-                <ListView HorizontalContentAlignment="Stretch" Grid.Row="0" Grid.Column="0" Margin="5px 5px" ItemsSource="{Binding ActiveActivity.Laps}" SelectedIndex="{Binding SelectedLapIndex}" Background="#F5F5F5" MaxHeight="400px">
+                <ListView HorizontalContentAlignment="Stretch" Grid.Row="0" BorderBrush="#444444" Grid.Column="0" Margin="5px 5px" ItemsSource="{Binding ActiveActivity.Laps}" SelectedIndex="{Binding SelectedLapIndex}" Background="#F5F5F5" MaxHeight="400px">
                     <ListView.View>
                         <GridView>
                             <GridView.Columns>
                                 <GridViewColumn>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Foreground="#757575"  Text="{Binding DisplayName}"></TextBlock>
+                                            <TextBlock Foreground="#444444"  Text="{Binding DisplayName}"></TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                     <GridViewColumn.Header>
-                                        <TextBlock Text="Lap" Foreground="#757575" ></TextBlock>
+                                        <TextBlock Text="Lap" Foreground="#444444" ></TextBlock>
                                     </GridViewColumn.Header>
                                 </GridViewColumn>
                                 <GridViewColumn>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding TotalTimeMinutes}" Foreground="#757575" ></TextBlock>
+                                            <TextBlock Text="{Binding TotalTimeMinutes}" Foreground="#444444" ></TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                     <GridViewColumn.Header>
-                                        <TextBlock Text="Time (hh:mm:ss)" Foreground="#757575" ></TextBlock>
+                                        <TextBlock Text="Time (hh:mm:ss)" Foreground="#444444" ></TextBlock>
                                     </GridViewColumn.Header>
                                 </GridViewColumn>
                                 <GridViewColumn>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding TotalDistanceMiles}" Foreground="#757575" ></TextBlock>
+                                            <TextBlock Text="{Binding TotalDistanceMiles}" Foreground="#444444" ></TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                     <GridViewColumn.Header>
-                                        <TextBlock Text="Distance (mi)" Foreground="#757575" ></TextBlock>
+                                        <TextBlock Text="Distance (mi)" Foreground="#444444" ></TextBlock>
                                     </GridViewColumn.Header>
                                 </GridViewColumn>
                                 <GridViewColumn>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding AvgSpeed}" Foreground="#757575" ></TextBlock>
+                                            <TextBlock Text="{Binding AvgSpeed}" Foreground="#444444" ></TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                     <GridViewColumn.Header>
-                                        <TextBlock Text="Speed (mph)" Foreground="#757575" ></TextBlock>
+                                        <TextBlock Text="Speed (mph)" Foreground="#444444" ></TextBlock>
                                     </GridViewColumn.Header>
                                 </GridViewColumn>
                             </GridView.Columns>
@@ -96,20 +96,20 @@
                     </ListView.View>
                 </ListView>
 
-                <Button Grid.Row="1" Grid.Column="0" Command="{Binding LoadEntireAveragesCommand}" Margin="5px 20px" MinHeight="20px" IsEnabled="{Binding ActivityLoaded}" Foreground="#757575"  Background="#F5F5F5">Revert stats to overall average</Button>
+                <Button Grid.Row="1" BorderBrush="#444444"  Grid.Column="0" Command="{Binding LoadEntireAveragesCommand}" Margin="5px 20px" MinHeight="20px" IsEnabled="{Binding ActivityLoaded}" Foreground="#444444"  Background="#F5F5F5">Revert stats to overall average</Button>
 
-                <ComboBox Grid.Row="2" Grid.Column="0" Margin="5px 20px" IsEnabled="{Binding ActivityLoaded}" SelectedIndex="{Binding SelectedLapInfoIndex}" Background="#F5F5F5" Foreground="#757575">
-                    <ComboBoxItem Foreground="#757575" >Lap Time</ComboBoxItem>
-                    <ComboBoxItem Foreground="#757575" >Lap Distance</ComboBoxItem>
-                    <ComboBoxItem Foreground="#757575" >Lap Speed</ComboBoxItem>
-                    <ComboBoxItem Foreground="#757575" >Lap Heart Rate</ComboBoxItem>
-                    <ComboBoxItem Foreground="#757575" >Lap Power</ComboBoxItem>
-                    <ComboBoxItem Foreground="#757575" >Lap Cadence</ComboBoxItem>
-                    <ComboBoxItem Foreground="#757575" >Lap Elevation Gain</ComboBoxItem>
+                <ComboBox Grid.Row="2" Grid.Column="0" Margin="5px 20px" BorderBrush="#444444"  IsEnabled="{Binding ActivityLoaded}" SelectedIndex="{Binding SelectedLapInfoIndex}" Background="#F5F5F5" Foreground="#444444">
+                    <ComboBoxItem Foreground="#444444" >Lap Time</ComboBoxItem>
+                    <ComboBoxItem Foreground="#444444" >Lap Distance</ComboBoxItem>
+                    <ComboBoxItem Foreground="#444444" >Lap Speed</ComboBoxItem>
+                    <ComboBoxItem Foreground="#444444" >Lap Heart Rate</ComboBoxItem>
+                    <ComboBoxItem Foreground="#444444" >Lap Power</ComboBoxItem>
+                    <ComboBoxItem Foreground="#444444" >Lap Cadence</ComboBoxItem>
+                    <ComboBoxItem Foreground="#444444" >Lap Elevation Gain</ComboBoxItem>
                 </ComboBox>
 
                 <local:Laps Grid.Row="3" Grid.Column="0" Padding="10px" Margin="5px 20px"></local:Laps >
-                <Button Command="{Binding OpenFileCommand}" Grid.Row="4" Grid.Column="0" Margin="5px 20px" MinHeight="20px" Background="#00acc1" Foreground="#757575" >Upload TCX</Button>
+                <Button Command="{Binding OpenFileCommand}" BorderBrush="#444444"  Grid.Row="4" Grid.Column="0" Margin="5px 20px" MinHeight="20px" Background="#F5F5F5" Foreground="#444444" >Upload TCX</Button>
             </Grid>
         </ScrollViewer>
 
