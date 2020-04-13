@@ -48,7 +48,16 @@ namespace TCX_Visualizer.Models
         {
             get
             {
-                return Math.Round(TotalTimeSeconds / 60, 2).ToString("0.00");
+                TimeSpan t;
+                try
+                {
+                    t = TimeSpan.FromSeconds(TotalTimeSeconds);
+                }
+                catch
+                {
+                    return (TotalTimeSeconds/60).ToString("0.00");
+                }
+                return t.Hours.ToString("00") +":"+ t.Minutes.ToString("00") + ":" + t.Seconds.ToString("00");
             }
         }
 

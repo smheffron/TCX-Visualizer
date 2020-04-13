@@ -17,7 +17,7 @@
         </Grid.RowDefinitions>
         <oxy:Plot Title="Cadence" Grid.Row="0" Grid.Column="0" PlotAreaBorderColor="#757575" TextColor="#757575" Background="#F5F5F5">
             <oxy:Plot.Axes>
-                <oxy:LinearAxis Position="Bottom" Title="Time (min)" IsZoomEnabled="True" IsPanEnabled="True" AbsoluteMaximum="{Binding CadenceData.Max}" AbsoluteMinimum="{Binding CadenceData.Min}" TicklineColor="#757575" />
+                <oxy:TimeSpanAxis StringFormat="hh:mm" Position="Bottom" Title="Time (hh:mm)" IsZoomEnabled="True" IsPanEnabled="True" AbsoluteMaximum="{Binding CadenceData.Max}" AbsoluteMinimum="{Binding CadenceData.Min}" TicklineColor="#757575" />
                 <oxy:LinearAxis Position="Left" Title="Cadence (rpm)" IsZoomEnabled="False" IsPanEnabled="False" TicklineColor="#757575"/>
             </oxy:Plot.Axes>
             <oxy:Plot.Series>

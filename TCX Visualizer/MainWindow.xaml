@@ -47,7 +47,7 @@
                     <RowDefinition Height="0.2*" />
                 </Grid.RowDefinitions>
 
-                <ListView HorizontalContentAlignment="Stretch" Grid.Row="0" Grid.Column="0" Margin="5px 5px" ItemsSource="{Binding ActiveActivity.Laps}" SelectedIndex="{Binding SelectedLapIndex}" Background="#F5F5F5">
+                <ListView HorizontalContentAlignment="Stretch" Grid.Row="0" Grid.Column="0" Margin="5px 5px" ItemsSource="{Binding ActiveActivity.Laps}" SelectedIndex="{Binding SelectedLapIndex}" Background="#F5F5F5" MaxHeight="400px">
                     <ListView.View>
                         <GridView>
                             <GridView.Columns>
@@ -68,7 +68,7 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                     <GridViewColumn.Header>
-                                        <TextBlock Text="Time (min)" Foreground="#757575" ></TextBlock>
+                                        <TextBlock Text="Time (hh:mm:ss)" Foreground="#757575" ></TextBlock>
                                     </GridViewColumn.Header>
                                 </GridViewColumn>
                                 <GridViewColumn>
@@ -109,7 +109,7 @@
                 </ComboBox>
 
                 <local:Laps Grid.Row="3" Grid.Column="0" Padding="10px" Margin="5px 20px"></local:Laps >
-                <Button Command="{Binding OpenFileCommand}" Grid.Row="4" Grid.Column="0" Margin="5px 20px" MinHeight="20px" Background="#F5F5F5" Foreground="#757575" >Upload TCX</Button>
+                <Button Command="{Binding OpenFileCommand}" Grid.Row="4" Grid.Column="0" Margin="5px 20px" MinHeight="20px" Background="#00acc1" Foreground="#757575" >Upload TCX</Button>
             </Grid>
         </ScrollViewer>
 

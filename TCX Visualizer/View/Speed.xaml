@@ -17,7 +17,7 @@
         </Grid.RowDefinitions>
         <oxy:Plot Title="Speed" Grid.Row="0" Grid.Column="0" PlotAreaBorderColor="#757575" TextColor="#757575" Background="#F5F5F5">
             <oxy:Plot.Axes>
-                <oxy:LinearAxis Position="Bottom" Title="Time (min)" IsZoomEnabled="True" IsPanEnabled="True" AbsoluteMaximum="{Binding SpeedData.Max}" AbsoluteMinimum="{Binding SpeedData.Min}" TicklineColor="#757575" />
+                <oxy:TimeSpanAxis Position="Bottom" Title="Time (hh:mm)" StringFormat="hh:mm" IsZoomEnabled="True" IsPanEnabled="True" AbsoluteMaximum="{Binding SpeedData.Max}" AbsoluteMinimum="{Binding SpeedData.Min}" TicklineColor="#757575" />
                 <oxy:LinearAxis Position="Left" Title="Speed (mph)" IsZoomEnabled="False" IsPanEnabled="False" TicklineColor="#757575"/>
             </oxy:Plot.Axes>
             <oxy:Plot.Series>

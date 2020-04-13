@@ -10,7 +10,7 @@
     <Grid>
         <oxy:Plot Title="Laps" IsLegendVisible="False" PlotAreaBorderColor="#757575" TextColor="#757575" Background="#F5F5F5">
             <oxy:Plot.Axes>
-                <oxy:CategoryAxis Position="Bottom" Title="Lap" IsZoomEnabled="False" IsPanEnabled="False" TicklineColor="#757575" />
+                <oxy:CategoryAxis Position="Bottom" Title="Lap" IsZoomEnabled="True" IsPanEnabled="True" TicklineColor="#757575" AbsoluteMaximum="{Binding LapData.Max}" AbsoluteMinimum="{Binding LapData.Min}" />
             <oxy:LinearAxis Position="Left" Title="{Binding SelectedLapData}" IsZoomEnabled="False" IsPanEnabled="False" TicklineColor="#757575"/>
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
