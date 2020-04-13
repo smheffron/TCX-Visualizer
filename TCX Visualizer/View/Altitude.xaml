@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:TCX_Visualizer.View"
              xmlns:oxy="http://oxyplot.org/wpf"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" Background="#f5f5f5">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1.05*" />
@@ -15,15 +15,15 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <oxy:Plot Title="Elevation" Grid.Row="0" Grid.Column="0">
+        <oxy:Plot Title="Elevation" Grid.Row="0" Grid.Column="0" PlotAreaBorderColor="#757575" TextColor="#757575" Background="#F5F5F5">
             <oxy:Plot.Axes>
-                <oxy:LinearAxis Position="Bottom" Title="Time" IsZoomEnabled="True" IsPanEnabled="True" AbsoluteMaximum="{Binding ElevationData.Max}" AbsoluteMinimum="{Binding ElevationData.Min}"/>
-                <oxy:LinearAxis Position="Left" Title="Elevation" IsZoomEnabled="False" IsPanEnabled="False"/>
+                <oxy:LinearAxis Position="Bottom" Title="Time (min)" IsZoomEnabled="True" IsPanEnabled="True" AbsoluteMaximum="{Binding ElevationData.Max}" AbsoluteMinimum="{Binding ElevationData.Min}" TicklineColor="#757575" />
+                <oxy:LinearAxis Position="Left" Title="Elevation (ft)" IsZoomEnabled="False" IsPanEnabled="False" TicklineColor="#757575"/>
             </oxy:Plot.Axes>
             <oxy:Plot.Series>
-                <oxy:LineSeries ItemsSource="{Binding ElevationData.Points}" Color="LightGreen"/>
+                <oxy:LineSeries ItemsSource="{Binding ElevationData.Points}" Color="SandyBrown"/>
             </oxy:Plot.Series>
         </oxy:Plot>
-        <TextBlock Grid.Row="0" Grid.Column="1" FontWeight="Bold" FontSize="25" Text="{Binding ElevationInfo}" VerticalAlignment="Center" Padding="10px" Margin="40 0 0 0"></TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="1" FontWeight="Bold" FontSize="20" Text="{Binding ElevationInfo}" VerticalAlignment="Center" Padding="10px" Margin="40 0 0 0" Foreground="#757575" ></TextBlock>
     </Grid>
 </UserControl>

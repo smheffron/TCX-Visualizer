@@ -32,7 +32,12 @@ namespace TCX_Visualizer.ViewModels
         private String speedInfo;
         private String elevationInfo;
         private String wattsInfo;
-        private String name;
+        private String name = "Upload an Activity";
+        private int selectedLapIndex;
+        private int selectedLapInfoIndex;
+        private bool activityLoaded = false;
+        private String selectedLapData;
+        private String statsDisplayName;
 
         public Activity ActiveActivity
         {
@@ -44,6 +49,40 @@ namespace TCX_Visualizer.ViewModels
             {
                 activeActivity = value;
                 RaisePropertyChanged("ActiveActivity");
+            }
+        }
+
+        public String StatsDisplayName
+        {
+            get
+            {
+                if(statsDisplayName != null)
+                {
+                    return statsDisplayName;
+                }
+                else
+                {
+                    return "Overall stats:";
+                }
+            }
+            set
+            {
+
+                statsDisplayName = value;
+                RaisePropertyChanged("StatsDisplayName");
+            }
+        }
+
+        public bool ActivityLoaded
+        {
+            get
+            {
+                return activityLoaded;
+            }
+            set
+            {
+                activityLoaded = value;
+                RaisePropertyChanged("ActivityLoaded");
             }
         }
 
@@ -147,6 +186,7 @@ namespace TCX_Visualizer.ViewModels
                 RaisePropertyChanged("LapData");
             }
         }
+
         public GraphData ElevationData {
             get
             {
@@ -217,11 +257,474 @@ namespace TCX_Visualizer.ViewModels
                 RaisePropertyChanged("FilePath");
             }
         }
+
+        public int SelectedLapIndex
+        {
+            get
+            {
+                return selectedLapIndex;
+            }
+            set
+            {
+                this.selectedLapIndex = value;
+                StatsDisplayName = "Lap " + (selectedLapIndex + 1).ToString() + " stats:";
+                updateGraphsAndData(selectedLapIndex);
+                RaisePropertyChanged("SelectedLapIndex");
+            }
+        }
+
+        public String SelectedLapData
+        {
+            get
+            {
+                return selectedLapData;
+            }
+            set
+            {
+                this.selectedLapData = value;
+                RaisePropertyChanged("SelectedLapData");
+            }
+        }
+
+        public int SelectedLapInfoIndex
+        {
+            get
+            {
+                return selectedLapInfoIndex;
+            }
+            set
+            {
+                this.selectedLapInfoIndex = value;
+                updateLapChart(selectedLapInfoIndex);
+                RaisePropertyChanged("SelectedLapInfoIndex");
+            }
+        }
+
         public ICommand OpenFileCommand { get; private set; }
+        public ICommand LoadEntireAveragesCommand { get; private set; }
 
         public MainViewModel()
         {
             OpenFileCommand = new RelayCommand(OpenTCXFile);
+            LoadEntireAveragesCommand = new RelayCommand(updateGraphsAndDataEntire);
+        }
+
+        private void updateLapChart(int selectedLapIndex)
+        {
+            double min = 0;
+            double max = 0;
+            if(selectedLapIndex == 0)
+            {
+                //update time lap graph
+                max = 0;
+                min = 0;
+                List<double> lapList = new List<double>(ActiveActivity.Laps.Select(x => x.TotalTimeSeconds).ToList());
+                List<ColumnItem> lapDataPoints = new List<ColumnItem>();
+                foreach (double point in lapList)
+                {
+                    lapDataPoints.Add(new ColumnItem { Value = point / 60, Color = OxyColors.MediumAquamarine });
+                }
+                max = lapDataPoints.Count;
+                min = 0;
+
+                LapData = new BarChartData(lapDataPoints, max, min);
+
+                SelectedLapData = "Time (min)";
+            }
+            else if (selectedLapIndex == 1)
+            {
+                //update distance lap graph
+                List<double> disLapList = new List<double>(ActiveActivity.Laps.Select(x => x.TotalDistanceMeters).ToList());
+                List<ColumnItem> disLapDataPoints = new List<ColumnItem>();
+                foreach (double point in disLapList)
+                {
+                    disLapDataPoints.Add(new ColumnItem { Value = point * 0.000621371, Color = OxyColors.OrangeRed });
+                }
+                max = disLapDataPoints.Count;
+                min = 0;
+
+                LapData = new BarChartData(disLapDataPoints, max, min);
+
+                SelectedLapData = "Distance (mi)";
+            }
+            else if(selectedLapIndex == 2) {
+                //update speed lap graph
+                List<double> speedLapList = new List<double>(ActiveActivity.Laps.Select(x => x.AvgSpeed).ToList());
+                List<ColumnItem> speedLapDataPoints = new List<ColumnItem>();
+                foreach (double point in speedLapList)
+                {
+                    speedLapDataPoints.Add(new ColumnItem { Value = point, Color = OxyColors.LightBlue });
+                }
+                max = speedLapDataPoints.Count;
+                min = 0;
+
+                LapData = new BarChartData(speedLapDataPoints, max, min);
+
+                SelectedLapData = "Speed (mph)";
+            }
+            else if (selectedLapIndex == 3)
+            {
+                //update hr lap graph
+                List<double> hrLapList = new List<double>(ActiveActivity.Laps.Select(x => x.AvgHeartRate).ToList());
+                List<ColumnItem> hrLapDataPoints = new List<ColumnItem>();
+                foreach (double point in hrLapList)
+                {
+                    hrLapDataPoints.Add(new ColumnItem { Value = point, Color = OxyColors.IndianRed });
+                }
+                max = hrLapDataPoints.Count;
+                min = 0;
+
+                LapData = new BarChartData(hrLapDataPoints, max, min);
+
+                SelectedLapData = "Heart Rate (bpm)";
+            }
+            else if (selectedLapIndex == 4)
+            {
+                //update watts lap graph
+                List<double> wattsLapList = new List<double>(ActiveActivity.Laps.Select(x => x.AvgPower).ToList());
+                List<ColumnItem> wattsLapDataPoints = new List<ColumnItem>();
+                foreach (double point in wattsLapList)
+                {
+                    wattsLapDataPoints.Add(new ColumnItem { Value = point, Color = OxyColor.Parse("#b19cd9") });
+                }
+                max = wattsLapDataPoints.Count;
+                min = 0;
+
+                LapData = new BarChartData(wattsLapDataPoints, max, min);
+
+                SelectedLapData = "Power (W)";
+            }
+            else if (selectedLapIndex == 5)
+            {
+                //update cadence lap graph
+                List<double> cadenceLapList = new List<double>(ActiveActivity.Laps.Select(x => x.AvgCadence).ToList());
+                List<ColumnItem> cadenceLapDataPoints = new List<ColumnItem>();
+                foreach (double point in cadenceLapList)
+                {
+                    cadenceLapDataPoints.Add(new ColumnItem { Value = point, Color = OxyColors.LightGreen });
+                }
+                max = cadenceLapDataPoints.Count;
+                min = 0;
+
+                LapData = new BarChartData(cadenceLapDataPoints, max, min);
+
+                SelectedLapData = "Cadence (rpm)";
+            }
+            else if (selectedLapIndex == 6)
+            {
+
+                //update eg lap graph
+                List<double> egLapList = new List<double>(ActiveActivity.Laps.Select(x => x.ElevationGain).ToList());
+                List<ColumnItem> egLapDataPoints = new List<ColumnItem>();
+                foreach (double point in egLapList)
+                {
+                    egLapDataPoints.Add(new ColumnItem { Value = point, Color = OxyColors.SandyBrown });
+                }
+                max = egLapDataPoints.Count;
+                min = 0;
+
+                LapData = new BarChartData(egLapDataPoints, max, min);
+
+                SelectedLapData = "Elevation Gain (ft)";
+            }
+        }
+
+        public void updateGraphsAndDataEntire()
+        {
+            StatsDisplayName = null;
+
+            ActivityLoaded = true;
+
+            int i = 0;
+            double max = 0;
+            double min = 0;
+
+            //update watts graph
+            if (ActiveType == Sport.Biking)
+            {
+                List<double> wattsList = new List<double>(ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => (y.Extensions as BikeExtension).Watts)).ToList());
+                List<DataPoint> wattsDataPoints = new List<DataPoint>();
+                foreach (double point in wattsList)
+                {
+                    TimeSpan time = TimeSpan.FromSeconds(i);
+
+                    wattsDataPoints.Add(new DataPoint(TimeSpanAxis.ToDouble(time) / 60, point));
+                    i++;
+                }
+                max = wattsDataPoints.Count / 60;
+                min = 0;
+
+                WattsData = new GraphData(wattsDataPoints, max, min);
+            }
+            
+            // update hr graph
+            List<double> hrList = new List<double>(ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => y.HeartRate)).ToList());
+            List<DataPoint> hrDataPoints = new List<DataPoint>();
+            i = 0;
+            foreach (double point in hrList)
+            {
+                TimeSpan time = TimeSpan.FromSeconds(i);
+
+                hrDataPoints.Add(new DataPoint(TimeSpanAxis.ToDouble(time) / 60, point));
+                i++;
+            }
+            max = hrDataPoints.Count / 60;
+            min = 0;
+
+            HeartRateData = new GraphData(hrDataPoints, max, min);
+
+            if(ActiveType == Sport.Biking)
+            {
+                List<double> speedList = new List<double>(ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => (y.Extensions as BikeExtension).Speed)).ToList());
+                List<DataPoint> speedDataPoints = new List<DataPoint>();
+                i = 0;
+                foreach (double point in speedList)
+                {
+                    TimeSpan time = TimeSpan.FromSeconds(i);
+
+                    speedDataPoints.Add(new DataPoint(TimeSpanAxis.ToDouble(time) / 60, point));
+                    i++;
+                }
+                max = speedDataPoints.Count / 60;
+                min = 0;
+
+                SpeedData = new GraphData(speedDataPoints, max, min);
+            }
+            
+            // update cadence graph
+            List<double> cadenceList = new List<double>(ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => y.Cadence)).ToList());
+            List<DataPoint> cadenceDataPoints = new List<DataPoint>();
+            i = 0;
+            foreach (double point in cadenceList)
+            {
+                TimeSpan time = TimeSpan.FromSeconds(i);
+
+                cadenceDataPoints.Add(new DataPoint(TimeSpanAxis.ToDouble(time) / 60, point));
+                i++;
+            }
+            max = cadenceDataPoints.Count / 60;
+            min = 0;
+
+            CadenceData = new GraphData(cadenceDataPoints, max, min);
+
+            // update elevation graph
+            List<double> elevationList = new List<double>(ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => y.Altitude)).ToList());
+            List<DataPoint> elevationDataPoints = new List<DataPoint>();
+            i = 0;
+            foreach (double point in elevationList)
+            {
+                TimeSpan time = TimeSpan.FromSeconds(i);
+
+                elevationDataPoints.Add(new DataPoint(TimeSpanAxis.ToDouble(time) / 60, point));
+                i++;
+            }
+            max = elevationDataPoints.Count / 60;
+            min = 0;
+
+            ElevationData = new GraphData(elevationDataPoints, max, min);
+            
+            //update hr stats
+            if (ActiveActivity != null)
+            {
+                double avg = ActiveActivity.AvgHeartRate;
+                double maxim = ActiveActivity.MaxHeartRate;
+                HeartRateInfo = "Average: " + Math.Round(avg, 0) + " bpm\nMax: " + Math.Round(maxim, 0) + " bpm";
+            }
+            //update cadence stats
+            if (ActiveActivity != null)
+            {
+                if (ActiveActivity is BikeActivity)
+                {
+                    BikeActivity b = (BikeActivity)ActiveActivity;
+                    double avg = b.AvgCadence;
+                    double maxim = b.MaxCadence;
+                    CadenceInfo = "Average: " + Math.Round(avg, 0) + " rpm\nMax: " + Math.Round(maxim, 0) + " rpm";
+                }
+            }
+            // update speed stats
+            if (ActiveActivity != null)
+            {
+                double avg = ActiveActivity.AvgSpeed;
+                double maxim = ActiveActivity.MaxSpeed;
+                SpeedInfo = "Average: " + Math.Round(avg, 2) + " mph\nMax: " + Math.Round(maxim, 2) + " mph";
+            }
+            // update watts stats
+            if (ActiveActivity != null)
+            {
+                if (ActiveActivity is BikeActivity)
+                {
+                    BikeActivity b = (BikeActivity)ActiveActivity;
+                    double avg = b.AvgPower;
+                    double maxim = b.MaxPower;
+                    WattsInfo = "Average: " + Math.Round(avg, 0) + " W\nMax: " + Math.Round(maxim, 0) + " W";
+                }
+            }
+            //update elevation stats
+            if (ActiveActivity != null)
+            {
+                var ascList = ActiveActivity.Laps.Select(x => x.ElevationGain);
+                var descList = ActiveActivity.Laps.Select(x => x.ElevationLoss);
+
+                double asc = 0;
+                double desc = 0;
+
+                foreach(double a in ascList)
+                {
+                    asc += a;
+                }
+                foreach(double d in descList)
+                {
+                    desc += d;
+                }
+
+                double largest = ActiveActivity.Laps.Max(x => x.BiggestClimb);
+
+
+                ElevationInfo = "Ascent: " + Math.Round(asc, 0) + " ft\nDescent: " + Math.Round(desc, 0) + " ft\nLargest climb: " + Math.Round(largest, 0) + " ft";
+            }
+        }
+
+        private void updateGraphsAndData(int selectedLapIndex)
+        {
+            Lap lap = ActiveActivity.Laps[selectedLapIndex];
+            
+            //Update watts graph
+            List<double> wattsList = new List<double>(lap.Trackpoints.Select(x => (x.Extensions as BikeExtension).Watts)).ToList();
+            List<DataPoint> wattsDataPoints = new List<DataPoint>();
+            int i = 0;
+            foreach (double point in wattsList)
+            {
+                TimeSpan time = TimeSpan.FromSeconds(i);
+
+                wattsDataPoints.Add(new DataPoint(TimeSpanAxis.ToDouble(time) / 60, point));
+                i++;
+            }
+            double max = wattsDataPoints.Count / 60;
+            double min = 0;
+
+            WattsData = new GraphData(wattsDataPoints, max, min);
+
+            //update hr graph
+            List<double> hrList = new List<double>(lap.Trackpoints.Select(y => y.HeartRate)).ToList();
+            List<DataPoint> hrDataPoints = new List<DataPoint>();
+            i = 0;
+            foreach (double point in hrList)
+            {
+                TimeSpan time = TimeSpan.FromSeconds(i);
+
+                hrDataPoints.Add(new DataPoint(TimeSpanAxis.ToDouble(time) / 60, point));
+                i++;
+            }
+            max = hrDataPoints.Count / 60;
+            min = 0;
+
+            HeartRateData = new GraphData(hrDataPoints, max, min);
+
+            // Update speed graph
+            List<double> speedList = new List<double>(lap.Trackpoints.Select(y => (y.Extensions as BikeExtension).Speed)).ToList();
+            List<DataPoint> speedDataPoints = new List<DataPoint>();
+            i = 0;
+            foreach (double point in speedList)
+            {
+                TimeSpan time = TimeSpan.FromSeconds(i);
+
+                speedDataPoints.Add(new DataPoint(TimeSpanAxis.ToDouble(time) / 60, point));
+                i++;
+            }
+            max = speedDataPoints.Count / 60;
+            min = 0;
+
+            SpeedData = new GraphData(speedDataPoints, max, min);
+
+            // Update Cadence graph
+            List<double> cadenceList = new List<double>(lap.Trackpoints.Select(y => y.Cadence)).ToList();
+            List<DataPoint> cadenceDataPoints = new List<DataPoint>();
+            i = 0;
+            foreach (double point in cadenceList)
+            {
+                TimeSpan time = TimeSpan.FromSeconds(i);
+
+                cadenceDataPoints.Add(new DataPoint(TimeSpanAxis.ToDouble(time) / 60, point));
+                i++;
+            }
+            max = cadenceDataPoints.Count / 60;
+            min = 0;
+
+            CadenceData = new GraphData(cadenceDataPoints, max, min);
+
+            // Updated elevevation graph
+            List<double> elevationList = new List<double>(lap.Trackpoints.Select(y => y.Altitude)).ToList();
+            List<DataPoint> elevationDataPoints = new List<DataPoint>();
+            i = 0;
+            foreach (double point in elevationList)
+            {
+                TimeSpan time = TimeSpan.FromSeconds(i);
+
+                elevationDataPoints.Add(new DataPoint(TimeSpanAxis.ToDouble(time) / 60, point));
+                i++;
+            }
+            max = elevationDataPoints.Count / 60;
+            min = 0;
+
+            ElevationData = new GraphData(elevationDataPoints, max, min);
+
+            //Update HR stats
+            if (ActiveActivity != null)
+            {
+                double avg = lap.AvgHeartRate;
+                double maxim = lap.MaxHeartRate;
+                HeartRateInfo = "Average: " + Math.Round(avg, 0) + " bpm\nMax: " + Math.Round(maxim, 0) + " bpm";
+            }
+            //update cadence stats
+            if (ActiveActivity != null)
+            {
+                if (ActiveActivity is BikeActivity)
+                {
+                    double avg = lap.AvgCadence;
+                    double maxim = lap.MaxCadence;
+                    CadenceInfo = "Average: " + Math.Round(avg, 0) + " rpm\nMax: " + Math.Round(maxim, 0) + " rpm";
+                }
+            }
+            //Update speed stats
+            if (ActiveActivity != null)
+            {
+                double avg = lap.AvgSpeed;
+                double maxim = lap.MaxSpeed;
+                SpeedInfo = "Average: " + Math.Round(avg, 2) + " mph\nMax: " + Math.Round(maxim, 2) + " mph";
+            }
+            // update power stats
+            if (ActiveActivity != null)
+            {
+                if (ActiveActivity is BikeActivity)
+                {
+                    double avg = lap.AvgPower;
+                    double maxim = lap.MaxPower;
+                    WattsInfo = "Average: " + Math.Round(avg, 0) + " W\nMax: " + Math.Round(maxim, 0) + " W";
+                }
+            }
+            if (ActiveActivity != null)
+            {
+                var ascList = ActiveActivity.Laps.Select(x => x.ElevationGain);
+                var descList = ActiveActivity.Laps.Select(x => x.ElevationLoss);
+
+                double asc = lap.ElevationGain;
+                double desc = lap.ElevationLoss;
+                double largest = lap.BiggestClimb;
+
+                ElevationInfo = "Ascent: " + Math.Round(asc, 0) + " ft\nDescent: " + Math.Round(desc, 0) + " ft\nLargest climb: " + Math.Round(largest, 0) + " ft";
+
+                if (ActiveActivity != null)
+                {
+                    if (ActiveActivity is BikeActivity)
+                    {
+                        Name = (ActiveActivity as BikeActivity).Name;
+                    }
+                    else if (ActiveActivity is RunActivity)
+                    {
+                        Name = (ActiveActivity as RunActivity).Name;
+                    }
+                }
+            }
         }
 
         public void OpenTCXFile()
@@ -329,160 +832,30 @@ namespace TCX_Visualizer.ViewModels
                 ActiveActivity = activities.First();
             }
 
-            List<double> l = new List<double>(ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => (y.Extensions as BikeExtension).Watts)).ToList());
-            List<DataPoint> dataPoints = new List<DataPoint>();
-            int i = 0;
-            foreach(double point in l)
+            int lapNum = 0;
+            foreach(Lap lap in ActiveActivity.Laps)
             {
-                dataPoints.Add(new DataPoint(i, point));
-                i++;
+                lapNum++;
+                lap.DisplayName = "Lap " + lapNum;
             }
-            double max = dataPoints.Count;
-            double min = 0;
 
-            WattsData = new GraphData(dataPoints, max, min);
+            
 
-            List<double> l2 = new List<double>(ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => y.HeartRate)).ToList());
-            List<DataPoint> dataPoints2 = new List<DataPoint>();
-            i = 0;
-            foreach (double point in l2)
-            {
-                TimeSpan time = TimeSpan.FromSeconds(i);
-
-                dataPoints2.Add(new DataPoint(TimeSpanAxis.ToDouble(time), point));
-                i++;
-            }
-            max = dataPoints2.Count;
-            min = 0;
-
-            HeartRateData = new GraphData(dataPoints2, max, min);
-
-            List<double> l3 = new List<double>(ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => (y.Extensions as BikeExtension).Speed)).ToList());
-            List<DataPoint> dataPoints3 = new List<DataPoint>();
-            i = 0;
-            foreach (double point in l3)
-            {
-                TimeSpan time = TimeSpan.FromSeconds(i);
-
-                dataPoints3.Add(new DataPoint(TimeSpanAxis.ToDouble(time), point));
-                i++;
-            }
-            max = dataPoints3.Count;
-            min = 0;
-
-            SpeedData = new GraphData(dataPoints3, max, min);
-
-            List<double> l4 = new List<double>(ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => y.Cadence)).ToList());
-            List<DataPoint> dataPoints4 = new List<DataPoint>();
-            i = 0;
-            foreach (double point in l4)
-            {
-                TimeSpan time = TimeSpan.FromSeconds(i);
-
-                dataPoints4.Add(new DataPoint(TimeSpanAxis.ToDouble(time), point));
-                i++;
-            }
-            max = dataPoints4.Count;
-            min = 0;
-
-            CadenceData = new GraphData(dataPoints4, max, min);
-
-            List<double> l5 = new List<double>(ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => y.Altitude)).ToList());
-            List<DataPoint> dataPoints5 = new List<DataPoint>();
-            i = 0;
-            foreach (double point in l5)
-            {
-                TimeSpan time = TimeSpan.FromSeconds(i);
-
-                dataPoints5.Add(new DataPoint(TimeSpanAxis.ToDouble(time), point));
-                i++;
-            }
-            max = dataPoints5.Count;
-            min = 0;
-
-            ElevationData = new GraphData(dataPoints5, max, min);
-
-            List<double> l6 = new List<double>(ActiveActivity.Laps.Select(x => x.TotalTimeSeconds).ToList());
-            List<ColumnItem> dataPoints6 = new List<ColumnItem>();
-            i = 0;
-            foreach (double point in l6)
-            {
-                dataPoints6.Add(new ColumnItem { Color = OxyPlot.OxyColors.Aquamarine, Value = point/60, CategoryIndex = i });
-                i++;
-            }
-            max = dataPoints6.Count;
-            min = 0;
-
-            LapData = new BarChartData(dataPoints6, max, min);
-
-
-
-            if (ActiveActivity != null)
-            {
-                double avg = ActiveActivity.AvgHeartRate;
-                double maxim = ActiveActivity.MaxHeartRate;
-                HeartRateInfo = "Average: " + Math.Round(avg, 0) + " bpm\nMax: " + Math.Round(maxim, 0)+" bpm";
-            }
-            if (ActiveActivity != null)
-            {
-                if(ActiveActivity is BikeActivity)
-                {
-                    BikeActivity b = (BikeActivity)ActiveActivity; 
-                    double avg = b.AvgCadence;
-                    double maxim = b.MaxCadence;
-                    CadenceInfo = "Average: " + Math.Round(avg, 0) + " rpm\nMax: " + Math.Round(maxim, 0)+" rpm";
-                }
-            }
-            if (ActiveActivity != null)
-            {
-                double avg = ActiveActivity.AvgSpeed;
-                double maxim = ActiveActivity.MaxSpeed;
-                SpeedInfo = "Average: " + Math.Round(avg, 2) + " mph\nMax: " + Math.Round(maxim, 2)+" mph";
-            }
+            //update Name
             if (ActiveActivity != null)
             {
                 if (ActiveActivity is BikeActivity)
                 {
-                    BikeActivity b = (BikeActivity)ActiveActivity;
-                    double avg = b.AvgPower;
-                    double maxim = b.MaxPower;
-                    WattsInfo = "Average: " + Math.Round(avg, 0) + " W\nMax: " + Math.Round(maxim, 0)+" W";
+                    Name = (ActiveActivity as BikeActivity).Name;
+                }
+                else if (ActiveActivity is RunActivity)
+                {
+                    Name = (ActiveActivity as RunActivity).Name;
                 }
             }
-            if (ActiveActivity != null)
-            {
-                double asc = 0;
-                double desc = 0;
-                var altPoints = ActiveActivity.Laps.SelectMany(x => x.Trackpoints.Select(y => y.Altitude));
 
-                double prev = altPoints.First();
-                foreach(double point in altPoints)
-                {
-                    if(prev < point)
-                    {
-                        asc += point - prev;
-                    }
-                    else if(prev > point)
-                    {
-                        desc += prev - point;
-                    }
-                    prev = point;
-                }
-
-                ElevationInfo = "Ascent: " + Math.Round(asc, 0) + " m\nDescent: " + Math.Round(desc, 0)+" m";
-
-                if (ActiveActivity != null)
-                {
-                    if (ActiveActivity is BikeActivity)
-                    {
-                        Name = (ActiveActivity as BikeActivity).Name;
-                    }
-                    else if (ActiveActivity is RunActivity)
-                    {
-                        Name = (ActiveActivity as RunActivity).Name;
-                    }
-                }
-            }
+            updateGraphsAndDataEntire();
+            updateLapChart(0);
         }
     }
 }

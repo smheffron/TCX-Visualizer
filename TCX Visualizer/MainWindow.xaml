@@ -5,10 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TCX_Visualizer.View"
         xmlns:VM="clr-namespace:TCX_Visualizer.ViewModels"
+        xmlns:ie="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         Icon="energy.ico"
         Title="TCX Visualizer" WindowState="Maximized" MinHeight="600px" MinWidth="900px"
-        Background="#f1f1f1">
+        Background="White">
     <Window.DataContext>
         <VM:MainViewModel />
     </Window.DataContext>
@@ -29,9 +30,9 @@
             <RowDefinition Height="0.5*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Margin="3px" Grid.Column="0" Grid.ColumnSpan="1" Text="Laps:" Background="White" TextAlignment="Center" VerticalAlignment="Center" FontSize="30px"></TextBlock>
-        <TextBlock Grid.Row="0" Margin="3px"  Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Name, FallbackValue='Upload an Activity'}" Background="White" TextAlignment="Center" VerticalAlignment="Center" FontSize="30px"></TextBlock>
-        <TextBlock Grid.Row="0" Margin="3px"  Grid.Column="3" Grid.ColumnSpan="1" Text="Data:" Background="White" TextAlignment="Center" VerticalAlignment="Center" FontSize="30px"></TextBlock>
+        <TextBlock Foreground="#757575" FontWeight="Bold" Grid.Row="0" Margin="3px" Grid.Column="0" Grid.ColumnSpan="1" Text="Laps:" Background="White" TextAlignment="Center" VerticalAlignment="Center" FontSize="30px"></TextBlock>
+        <TextBlock Foreground="#757575" FontWeight="Bold" Grid.Row="0" Margin="3px"  Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Name, FallbackValue='Upload an Activity'}" Background="White" TextAlignment="Center" VerticalAlignment="Center" FontSize="30px"></TextBlock>
+        <TextBlock Foreground="#757575" FontWeight="Bold" Grid.Row="0" Margin="3px"  Grid.Column="3" Grid.ColumnSpan="1" Text="{Binding StatsDisplayName}" Background="White" TextAlignment="Center" VerticalAlignment="Center" FontSize="30px"></TextBlock>
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" Grid.Column="0" Grid.Row="1" Grid.RowSpan="6">
             <Grid MinHeight="500px">
@@ -40,14 +41,76 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*" />
+                    <RowDefinition Height="0.2*" />
+                    <RowDefinition Height="0.2*" />
                     <RowDefinition Height="1.2*" />
                     <RowDefinition Height="0.2*" />
                 </Grid.RowDefinitions>
-                <ListBox Grid.Row="0" Grid.Column="0" Margin="10px"></ListBox>
-                <local:Laps Grid.Row="1" Grid.Column="0" Padding="10px"></local:Laps>
-                <Button Command="{Binding OpenFileCommand}" Grid.Row="2" Grid.Column="0" Margin="5px 20px" MinHeight="20px">Upload TCX</Button>
+
+                <ListView HorizontalContentAlignment="Stretch" Grid.Row="0" Grid.Column="0" Margin="5px 5px" ItemsSource="{Binding ActiveActivity.Laps}" SelectedIndex="{Binding SelectedLapIndex}" Background="#F5F5F5">
+                    <ListView.View>
+                        <GridView>
+                            <GridView.Columns>
+                                <GridViewColumn>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Foreground="#757575"  Text="{Binding DisplayName}"></TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                    <GridViewColumn.Header>
+                                        <TextBlock Text="Lap" Foreground="#757575" ></TextBlock>
+                                    </GridViewColumn.Header>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding TotalTimeMinutes}" Foreground="#757575" ></TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                    <GridViewColumn.Header>
+                                        <TextBlock Text="Time (min)" Foreground="#757575" ></TextBlock>
+                                    </GridViewColumn.Header>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding TotalDistanceMiles}" Foreground="#757575" ></TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                    <GridViewColumn.Header>
+                                        <TextBlock Text="Distance (mi)" Foreground="#757575" ></TextBlock>
+                                    </GridViewColumn.Header>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding AvgSpeed}" Foreground="#757575" ></TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                    <GridViewColumn.Header>
+                                        <TextBlock Text="Speed (mph)" Foreground="#757575" ></TextBlock>
+                                    </GridViewColumn.Header>
+                                </GridViewColumn>
+                            </GridView.Columns>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+                <Button Grid.Row="1" Grid.Column="0" Command="{Binding LoadEntireAveragesCommand}" Margin="5px 20px" MinHeight="20px" IsEnabled="{Binding ActivityLoaded}" Foreground="#757575"  Background="#F5F5F5">Revert stats to overall average</Button>
+
+                <ComboBox Grid.Row="2" Grid.Column="0" Margin="5px 20px" IsEnabled="{Binding ActivityLoaded}" SelectedIndex="{Binding SelectedLapInfoIndex}" Background="#F5F5F5" Foreground="#757575">
+                    <ComboBoxItem Foreground="#757575" >Lap Time</ComboBoxItem>
+                    <ComboBoxItem Foreground="#757575" >Lap Distance</ComboBoxItem>
+                    <ComboBoxItem Foreground="#757575" >Lap Speed</ComboBoxItem>
+                    <ComboBoxItem Foreground="#757575" >Lap Heart Rate</ComboBoxItem>
+                    <ComboBoxItem Foreground="#757575" >Lap Power</ComboBoxItem>
+                    <ComboBoxItem Foreground="#757575" >Lap Cadence</ComboBoxItem>
+                    <ComboBoxItem Foreground="#757575" >Lap Elevation Gain</ComboBoxItem>
+                </ComboBox>
+
+                <local:Laps Grid.Row="3" Grid.Column="0" Padding="10px" Margin="5px 20px"></local:Laps >
+                <Button Command="{Binding OpenFileCommand}" Grid.Row="4" Grid.Column="0" Margin="5px 20px" MinHeight="20px" Background="#F5F5F5" Foreground="#757575" >Upload TCX</Button>
             </Grid>
-            
         </ScrollViewer>
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="1" Grid.RowSpan="6">
@@ -62,11 +125,11 @@
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
-                <local:Speed Padding="5px" Grid.Column="0" Grid.Row="0"></local:Speed>
-                <local:HeartRate Padding="5px" Grid.Column="0" Grid.Row="1"></local:HeartRate>
-                <local:Power Padding="5px" Grid.Column="0" Grid.Row="2"></local:Power>
-                <local:Cadence Padding="5px" Grid.Column="0" Grid.Row="3"></local:Cadence>
-                <local:Altitude Padding="5px" Grid.Column="0" Grid.Row="4"></local:Altitude>
+                <local:Speed Padding="5px" Grid.Column="0" Grid.Row="0" Margin="8px"></local:Speed>
+                <local:HeartRate Padding="5px" Grid.Column="0" Grid.Row="1" Margin="8px"></local:HeartRate>
+                <local:Power Padding="5px" Grid.Column="0" Grid.Row="2" Margin="8px"></local:Power>
+                <local:Cadence Padding="5px" Grid.Column="0" Grid.Row="3" Margin="8px"></local:Cadence>
+                <local:Altitude Padding="5px" Grid.Column="0" Grid.Row="4" Margin="8px"></local:Altitude>
             </Grid>
         </ScrollViewer>
     </Grid>

@@ -20,6 +20,12 @@ namespace TCX_Visualizer.Models
             CaloriesBurned = caloriesBurned;
         }
 
+        public String DisplayName
+        {
+            get;
+            set;
+        }
+
         public Sport Type
         {
             get;
@@ -38,10 +44,26 @@ namespace TCX_Visualizer.Models
             private set;
         }
 
+        public String TotalTimeMinutes
+        {
+            get
+            {
+                return Math.Round(TotalTimeSeconds / 60, 2).ToString("0.00");
+            }
+        }
+
         public double TotalDistanceMeters
         {
             get;
             private set;
+        }
+
+        public String TotalDistanceMiles
+        {
+            get
+            {
+                return Math.Round((TotalDistanceMeters )* 0.000621371, 2).ToString("0.00");
+            }
         }
 
         public double MaxSpeed
@@ -143,7 +165,7 @@ namespace TCX_Visualizer.Models
         {
             get
             {
-                double avg = (TotalDistanceMeters / TotalTimeSeconds) * 2.23694;
+                double avg = Math.Round( (TotalDistanceMeters / TotalTimeSeconds) * 2.23694, 2);
                 return avg;
             }
         }
@@ -165,6 +187,124 @@ namespace TCX_Visualizer.Models
                 {
                     return -1;
                 }
+            }
+        }
+        public double ElevationGain
+        {
+            get
+            {
+                double asc = 0;
+                double desc = 0;
+                double largest = 0;
+                double tempLarge = 0;
+                bool prevAsc = false;
+                var altPoints = Trackpoints.Select(x => x.Altitude);
+
+                double prev = altPoints.First();
+                foreach (double point in altPoints)
+                {
+                    if (prev < point)
+                    {
+                        asc += point - prev;
+                        if (prevAsc)
+                        {
+                            tempLarge += point - prev;
+                            if (tempLarge > largest)
+                            {
+                                largest = tempLarge;
+                            }
+                        }
+                        prevAsc = true;
+                    }
+                    else if (prev > point)
+                    {
+                        prevAsc = false;
+                        tempLarge = 0;
+                        desc += prev - point;
+                    }
+                    prev = point;
+                }
+
+                return asc;
+            }
+        }
+        public double ElevationLoss
+        {
+            get
+            {
+                double asc = 0;
+                double desc = 0;
+                double largest = 0;
+                double tempLarge = 0;
+                bool prevAsc = false;
+                var altPoints = Trackpoints.Select(x => x.Altitude);
+
+                double prev = altPoints.First();
+                foreach (double point in altPoints)
+                {
+                    if (prev < point)
+                    {
+                        asc += point - prev;
+                        if (prevAsc)
+                        {
+                            tempLarge += point - prev;
+                            if (tempLarge > largest)
+                            {
+                                largest = tempLarge;
+                            }
+                        }
+                        prevAsc = true;
+                    }
+                    else if (prev > point)
+                    {
+                        prevAsc = false;
+                        tempLarge = 0;
+                        desc += prev - point;
+                    }
+                    prev = point;
+                }
+
+                return desc;
+            }
+        }
+
+        public double BiggestClimb
+        {
+            get
+            {
+                double asc = 0;
+                double desc = 0;
+                double largest = 0;
+                double tempLarge = 0;
+                bool prevAsc = false;
+                var altPoints = Trackpoints.Select(x => x.Altitude);
+
+                double prev = altPoints.First();
+                foreach (double point in altPoints)
+                {
+                    if (prev < point)
+                    {
+                        asc += point - prev;
+                        if (prevAsc)
+                        {
+                            tempLarge += point - prev;
+                            if (tempLarge > largest)
+                            {
+                                largest = tempLarge;
+                            }
+                        }
+                        prevAsc = true;
+                    }
+                    else if (prev > point)
+                    {
+                        prevAsc = false;
+                        tempLarge = 0;
+                        desc += prev - point;
+                    }
+                    prev = point;
+                }
+
+                return largest;
             }
         }
     }

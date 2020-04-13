@@ -9,6 +9,7 @@ namespace TCX_Visualizer.Models
     class Trackpoint
     {
         private double cadence = -1;
+        private double altitude = -1;
         public Trackpoint(DateTime time, Coordinate pos, double alt, double dis, double hr, Sport type, double cadence = -1, Extension extensions = null)
         {
             Time = time;
@@ -41,8 +42,14 @@ namespace TCX_Visualizer.Models
 
         public double Altitude
         {
-            get;
-            private set;
+            get
+            {
+                return this.altitude * 3.28084;
+            }
+            private set
+            {
+                this.altitude = value;
+            }
         }
 
         public double Distance
