@@ -967,8 +967,25 @@ namespace TCX_Visualizer.ViewModels
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
+                    WattsData = null;
+                    HeartRateData = null;
+                    SpeedData = null;
+                    CadenceData = null;
+                    ElevationData = null;
+                    LapData = null;
+                    HeartRateData = null;
+                    CadenceInfo = null;
+                    SpeedInfo = null;
+                    ElevationInfo = null;
+                    WattsInfo = null;
+                    SelectedLapData = null;
+                    StatsDisplayName = null;
+
+
                     FilePath = openFileDialog.FileName;
                     readXml(FilePath);
+
+                    SelectedLapInfoIndex = 0;
                 }
             }
         }
