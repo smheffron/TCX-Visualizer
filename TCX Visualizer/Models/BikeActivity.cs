@@ -8,6 +8,7 @@ namespace TCX_Visualizer.Models
 {
     class BikeActivity : Activity
     {
+        // extends base class Activity, but adds a few bike specific stats such as bike cadence and power
         public BikeActivity(DateTime id, String device, List<Lap> laps) : base(id, device, laps)
         {
 

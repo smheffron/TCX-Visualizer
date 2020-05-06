@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TCX_Visualizer.Models
 {
+    // extends base Activity class, no need for bike things such as power
     class RunActivity : Activity
     {
         public RunActivity(DateTime id, String device, List<Lap> laps) : base(id, device, laps)

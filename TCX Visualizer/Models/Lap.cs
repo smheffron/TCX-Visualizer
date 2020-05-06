@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace TCX_Visualizer.Models
 {
+    // base class to hold all important data relating to a lap
+    //including start time, total time, max speed, trackpoints list, calories burned
     class Lap
     {
         private double maxSpeed = 0;
@@ -46,6 +48,7 @@ namespace TCX_Visualizer.Models
 
         public String TotalTimeMinutes
         {
+            // convert from seconds to a timespan in hours, minutes, seconds
             get
             {
                 TimeSpan t;
@@ -207,6 +210,7 @@ namespace TCX_Visualizer.Models
         }
         public double ElevationGain
         {
+            // calculates elevation on the lap gain based on trackpoint elevation markers
             get
             {
                 double asc = 0;
@@ -246,6 +250,7 @@ namespace TCX_Visualizer.Models
         }
         public double ElevationLoss
         {
+            // calculates elevation loss on the lap based on trackpoint eleveation markers
             get
             {
                 double asc = 0;
@@ -284,6 +289,7 @@ namespace TCX_Visualizer.Models
             }
         }
 
+        // calcultes the biggest climb on the lap from the trackpoint elevation markers
         public double BiggestClimb
         {
             get

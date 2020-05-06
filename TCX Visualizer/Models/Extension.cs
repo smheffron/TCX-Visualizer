@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TCX_Visualizer.Models
 {
+    // base class to hold trackpoint stats, only speed
     class Extension
     {
         private double speed;

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TCX_Visualizer.Models
 {
+    // enum to describe a sport as either cycling or running
     public enum Sport
     {
         Running,

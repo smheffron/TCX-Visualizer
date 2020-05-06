@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TCX_Visualizer.Models
 {
+    // extends base class Extension that gets its cadence from a different place than a cycling extension, also no power data
     class RunExtension : Extension
     {
         private double cadence = -1;

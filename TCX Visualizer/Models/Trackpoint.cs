@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace TCX_Visualizer.Models
 {
+    // a trackpoint is basically a snapshot of your stats at a certain point in time
+    // it contains info such as time, position, altitude, distance, hr, cadence, and extensions (such as power for cycling)
     class Trackpoint
     {
         private double cadence = -1;

@@ -8,6 +8,7 @@ namespace TCX_Visualizer.Models
 {
     class Activity
     {
+        // base class that holds basic data such as id, device, laps
         public Activity(DateTime id, String device, List<Lap> laps)
         {
             Id = id;

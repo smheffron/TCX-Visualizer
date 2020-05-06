@@ -8,6 +8,7 @@ namespace TCX_Visualizer.Models
 {
     class Coordinate
     {
+        //class for holding the coordinates of the trackpoints along the activity
         public Coordinate(double lat, double lon)
         {
             Lat = lat;

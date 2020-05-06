@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TCX_Visualizer.Models
 {
+    //extends base class Extension, but adds a few bike specfic things such as power
     class BikeExtension : Extension
     {
         public BikeExtension(double speed, double watts) : base(speed)

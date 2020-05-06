@@ -39,6 +39,7 @@ namespace TCX_Visualizer.ViewModels
         private String selectedLapData;
         private String statsDisplayName;
 
+        // the activity that is currently being displayed in the main window
         public Activity ActiveActivity
         {
             get
@@ -52,6 +53,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // changes based on if the stats are overall average, or a specific lap average
         public String StatsDisplayName
         {
             get
@@ -73,6 +75,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // bool for if an activity has been loaded into the system yet
         public bool ActivityLoaded
         {
             get
@@ -86,6 +89,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // display name of the activity that was uploaded
         public String Name
         {
             get
@@ -99,6 +103,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // heart rate graph info
         public string HeartRateInfo
         {
             get
@@ -111,6 +116,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // elevation graph info
         public string ElevationInfo
         {
             get
@@ -124,6 +130,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // speed averages info
         public string SpeedInfo
         {
             get
@@ -137,6 +144,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // watts averages info (bike only)
         public string WattsInfo
         {
             get
@@ -157,6 +165,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // cadence averages info
         public string CadenceInfo
         {
             get
@@ -170,7 +179,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
-
+        // watts averages info
         public GraphData WattsData {
             get
             {
@@ -182,6 +191,8 @@ namespace TCX_Visualizer.ViewModels
                 RaisePropertyChanged("WattsData");
             }
         }
+
+        // lap bar chart info
         public BarChartData LapData {
             get
             {
@@ -194,6 +205,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // elevation graph data
         public GraphData ElevationData {
             get
             {
@@ -205,6 +217,8 @@ namespace TCX_Visualizer.ViewModels
                 RaisePropertyChanged("ElevationData");
             }
         }
+
+        // cadence graph data
         public GraphData CadenceData {
             get
             {
@@ -216,6 +230,8 @@ namespace TCX_Visualizer.ViewModels
                 RaisePropertyChanged("CadenceData");
             }
         }
+
+        // speed graph data
         public GraphData SpeedData {
             get
             {
@@ -228,6 +244,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // heart rate graph data
         public GraphData HeartRateData
         {
             get
@@ -241,6 +258,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // active type of activity loaded into the system, enum Running or Biking
         public Sport ActiveType
         {
             get
@@ -254,6 +272,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // tcx filepath selected in the popup 
         public String FilePath
         {
             get {
@@ -265,6 +284,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // the lap that was selected from the lap list
         public int SelectedLapIndex
         {
             get
@@ -273,6 +293,8 @@ namespace TCX_Visualizer.ViewModels
             }
             set
             {
+                // update graphs to reflect lap data
+                // update averages to reflect lap averages
                 this.selectedLapIndex = value;
                 StatsDisplayName = "Lap " + (selectedLapIndex + 1).ToString() + " stats:";
                 updateGraphsAndData(selectedLapIndex);
@@ -280,6 +302,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // the label on the lap bar charts, have to change the unit for each type of stat
         public String SelectedLapData
         {
             get
@@ -293,6 +316,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // the index from the combo box of which stats to display in the lap bar graph panel
         public int SelectedLapInfoIndex
         {
             get
@@ -307,7 +331,9 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // command for launching open file dialog
         public ICommand OpenFileCommand { get; private set; }
+        // command for reseting the graphs to overall averages
         public ICommand LoadEntireAveragesCommand { get; private set; }
 
         public MainViewModel()
@@ -316,6 +342,7 @@ namespace TCX_Visualizer.ViewModels
             LoadEntireAveragesCommand = new RelayCommand(updateGraphsAndDataEntire);
         }
 
+        // updates the lap bar chart view for the selected data source
         private void updateLapChart(int selectedLapIndex)
         {
             double min = 0;
@@ -520,6 +547,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // updates the graphs and laps and stats (called on initial load in of a file)
         public void updateGraphsAndDataEntire()
         {
             StatsDisplayName = null;
@@ -749,6 +777,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // updates the graphs and graph averages for a selected lap
         private void updateGraphsAndData(int selectedLapIndex)
         {
 
@@ -957,14 +986,17 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // display the open file dialog to load a tcx file into the app
         public void OpenTCXFile()
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
+                // only tcx files
                 openFileDialog.InitialDirectory = "c:\\";
                 openFileDialog.Filter = "TCX Files (*.tcx)|*.tcx";
                 openFileDialog.RestoreDirectory = true;
 
+                // reset the data sources so that the graphs reset on a new file load in
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     WattsData = null;
@@ -973,7 +1005,7 @@ namespace TCX_Visualizer.ViewModels
                     CadenceData = null;
                     ElevationData = null;
                     LapData = null;
-                    HeartRateData = null;
+                    HeartRateInfo = null;
                     CadenceInfo = null;
                     SpeedInfo = null;
                     ElevationInfo = null;
@@ -990,6 +1022,7 @@ namespace TCX_Visualizer.ViewModels
             }
         }
 
+        // parse the tcx file and populate the modes, which populates the data sources for the graphs, charts, laps, averages, etc 
         private void readXml(string filename)
         {
             XDocument root = XDocument.Load(filename);
@@ -1000,10 +1033,12 @@ namespace TCX_Visualizer.ViewModels
             IEnumerable<String> sport = from data in root.Descendants(ns + "Activities")
                        select data.Element(ns + "Activity").Attribute("Sport").Value;
 
+            // get the type of sport being loaded, we need to look for certain attributes if it is cycling
             String inputSport = sport.First();
 
             IEnumerable<Activity> activities = null;
 
+            // a beast of a LINQ query on the XML/TCX document...
             if (inputSport.Equals("Running"))
             {
                 Sport type = Sport.Running;
@@ -1036,7 +1071,8 @@ namespace TCX_Visualizer.ViewModels
                                             )).ToList()
                                         )).ToList();
             }
-            else if(inputSport.Equals("Biking"))
+            // a beast of a LINQ query on the XML/TCX document...
+            else if (inputSport.Equals("Biking"))
             {
                 Sport type = Sport.Biking;
                 ActiveType = type;
@@ -1075,11 +1111,13 @@ namespace TCX_Visualizer.ViewModels
                 return;
             }
 
+            // update the active activity with the newly parsed activity
             if(activities.First() != null)
             {
                 ActiveActivity = activities.First();
             }
 
+            // update the laps display name for the lap list
             int lapNum = 0;
             foreach(Lap lap in ActiveActivity.Laps)
             {
@@ -1089,7 +1127,7 @@ namespace TCX_Visualizer.ViewModels
 
             
 
-            //update Name
+            //update Name of activity
             if (ActiveActivity != null)
             {
                 if (ActiveActivity is BikeActivity)
@@ -1102,7 +1140,9 @@ namespace TCX_Visualizer.ViewModels
                 }
             }
 
+            // load charts and graphs
             updateGraphsAndDataEntire();
+            // load the first bar chart for the lap view
             updateLapChart(0);
         }
     }

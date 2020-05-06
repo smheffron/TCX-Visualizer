@@ -98,8 +98,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BarChartData.cs" />
-    <Compile Include="GraphData.cs" />
+    <Compile Include="Models\BarChartData.cs" />
+    <Compile Include="Models\GraphData.cs" />
     <Compile Include="Models\BikeActivity.cs" />
     <Compile Include="Models\Sport.cs" />
     <Compile Include="Models\RunActivity.cs" />
